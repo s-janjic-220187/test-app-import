@@ -2,11 +2,11 @@ import os
 import mysql.connector
 
 DB_CONFIG = {
-    'host': os.environ.get('DB_HOST', 'db'),
-    'port': int(os.environ.get('DB_PORT', 3306)),
-    'user': os.environ.get('DB_USER', 'root'),
-    'password': os.environ.get('DB_PASSWORD', 'root'),
-    'database': os.environ.get('DB_NAME', 'python_dev')
+    'host': os.environ.get('MYSQL_HOST', 'db'),
+    'port': int(os.environ.get('MYSQL_PORT', 3306)),
+    'user': os.environ.get('MYSQL_USER', 'root'),
+    'password': os.environ.get('MYSQL_PASSWORD', 'root'),
+    'database': os.environ.get('MYSQL_DATABASE', 'python_dev')
 }
 
 MIGRATIONS_DIR = os.path.join(os.path.dirname(__file__))
