@@ -381,9 +381,9 @@ def test_page():
 def run_tests():
     import subprocess
     try:
-        # Use verbose output and show test names, short log, and durations (remove --summary)
+        # Use verbose output, plain text (no color), and show test names, short log, and durations
         result = subprocess.run([
-            'pytest', 'tests', '--maxfail=1', '--disable-warnings', '-v', '--tb=short', '--show-capture=log', '--durations=10', '--color=yes'
+            'pytest', 'tests', '--maxfail=1', '--disable-warnings', '-v', '--tb=short', '--show-capture=log', '--durations=10', '--color=no'
         ], capture_output=True, text=True, timeout=30)
         output = result.stdout + '\n' + result.stderr
         success = result.returncode == 0
@@ -406,6 +406,14 @@ logging.basicConfig(
 # Ensure Flask's logger uses the same handlers and level
 app.logger.handlers = logging.getLogger().handlers
 app.logger.setLevel(logging.INFO)
+
+# Add a startup log entry
+logging.info("Flask app started and logging is working.")
+
+@app.route('/log_test')
+def log_test():
+    logging.info("Test log entry from /log_test endpoint.")
+    return 'Test log entry written.'
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -34,7 +34,7 @@ function parseTestResults(output) {
     const lines = output.split('\n');
     const testResults = [];
     for (let line of lines) {
-        // Match: test_basic.py::test_landing_page PASSED [ 33%]
+        // Match: test_basic.py::test_landing_page PASSED [ 33%] (allow extra chars)
         let m = line.match(/([\w\./:-]+)::(test_[\w_]+)\s+(PASSED|FAILED|ERROR|SKIPPED)/i);
         if (m) {
             testResults.push({name: m[2], result: m[3].toUpperCase()});
