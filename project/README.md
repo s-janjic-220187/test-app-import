@@ -9,6 +9,7 @@ A modern Flask web application for importing, viewing, and managing test user da
 - **Events Calendar:** View, add, edit, and delete events (Rodjendan, Slava, Veselje) in a stylish calendar. User birthdays are automatically synced as 'Rodjendan' events.
 - **Responsive Design:** Works well on both web and Android/mobile browsers.
 - **Modern UI:** Uses Bootstrap, FullCalendar, and custom CSS for a clean, attractive look.
+- **Database Healthcheck:** Docker Compose healthcheck for MariaDB now uses the correct root user and password, preventing access denied warnings and ensuring reliable startup.
 
 ## Usage
 1. **Home:** Visit `/` to see the landing page.

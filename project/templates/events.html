@@ -23,8 +23,9 @@
 <div class="main-content">
     <div class="container-fluid">
         <h2 class="mb-4 gradient-text">Rodjendani, slave i veselja</h2>
-        <div class="back-link">
-            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-back">&larr; Back</a>
+        <div class="mb-3 d-flex align-items-center gap-2">
+            <label for="calendar-date-picker" class="form-label mb-0">Go to date:</label>
+            <input type="month" id="calendar-date-picker" class="form-control" style="max-width: 200px;">
         </div>
         <div id="calendar"></div>
     </div>
@@ -81,8 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         eventDisplay: 'block',
         eventColor: '#2575fc',
+        eventTextColor: '#fff',
         eventClick: function(info) {
-            // Populate modal with event data
             document.getElementById('eventId').value = info.event.id;
             document.getElementById('eventTitle').value = info.event.title.replace(/ \(.*\)$/, '');
             document.getElementById('eventType').value = info.event.extendedProps.event_type || 'Rodjendan';
@@ -105,13 +106,23 @@ document.addEventListener('DOMContentLoaded', function() {
             failure: function() { alert('There was an error while fetching events!'); }
         },
         eventDidMount: function(info) {
-            // Add a colored dot for visibility
             info.el.style.backgroundColor = '#2575fc';
             info.el.style.color = '#fff';
             info.el.style.borderRadius = '0.5rem';
+            info.el.style.fontWeight = 'bold';
+            info.el.style.fontSize = '1rem';
         }
     });
     calendar.render();
+
+    // Date picker to jump to month
+    document.getElementById('calendar-date-picker').addEventListener('change', function(e) {
+        const val = e.target.value;
+        if (val) {
+            const [year, month] = val.split('-');
+            calendar.gotoDate(new Date(year, month - 1, 1));
+        }
+    });
 
     document.getElementById('eventForm').onsubmit = function(e) {
         e.preventDefault();

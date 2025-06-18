@@ -179,7 +179,7 @@ def api_events(event_id=None):
         return jsonify([
             {
                 'id': e['id'],
-                'title': f"{e['title']} ({e['event_type']})",
+                'title': e['title'],
                 'start': e['event_date'],
                 'event_type': e['event_type']
             } for e in events
