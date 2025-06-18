@@ -53,11 +53,12 @@
                 </thead>
                 <tbody>
                     {% for row in names %}
+                    {% set row_idx = loop.index0 %}
                     <tr>
                         {% for item in row %}
                         {% set idx = loop.index0 %}
                         {% if editable and col_names_raw[idx] != 'id' %}
-                        <td contenteditable="true" data-row="{{ loop.parent.index0 }}" data-col="{{ col_names_raw[idx] }}">{{ item }}</td>
+                        <td contenteditable="true" data-row="{{ row_idx }}" data-col="{{ col_names_raw[idx] }}">{{ item }}</td>
                         {% else %}
                         <td>{{ item }}</td>
                         {% endif %}
