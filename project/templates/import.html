@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Import Users | Test Load App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="landing-bg">
+    <div class="d-flex flex-column justify-content-center align-items-center vh-100">
+        <div class="welcome-card text-center shadow-lg p-5 rounded">
+            <h1 class="display-5 fw-bold mb-3 gradient-text">Import Users</h1>
+            <p class="mb-3">To import users, upload an XML file matching the following format:</p>
+            <pre class="text-start bg-light p-3 rounded small mx-auto" style="max-width: 500px;">
+&lt;users&gt;
+    &lt;user&gt;
+        &lt;id&gt;1&lt;/id&gt;
+        &lt;first_name&gt;John&lt;/first_name&gt;
+        &lt;middle_name&gt;A.&lt;/middle_name&gt;
+        &lt;last_name&gt;Doe&lt;/last_name&gt;
+        &lt;date_of_birth&gt;1990-01-01&lt;/date_of_birth&gt;
+        &lt;created_on&gt;2023-01-01T12:00:00&lt;/created_on&gt;
+        &lt;is_active&gt;1&lt;/is_active&gt;
+    &lt;/user&gt;
+    ...
+&lt;/users&gt;
+            </pre>
+            <p class="mb-4">All fields are required. <br> <b>created_on</b> should be in <code>YYYY-MM-DDTHH:MM:SS</code> format.</p>
+            <form id="import-form" enctype="multipart/form-data">
+                <input type="file" id="import-file" name="file" accept=".xml" style="display:none;">
+                <button type="button" class="btn btn-gradient btn-lg" id="import-btn">Select XML File &amp; Import</button>
+            </form>
+        </div>
+    </div>
+    <script>
+    document.getElementById('import-btn').addEventListener('click', function() {
+        document.getElementById('import-file').click();
+    });
+    document.getElementById('import-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.name.endsWith('.xml')) {
+            alert('Please select an XML file.');
+            return;
+        }
+        if (confirm('Import users from selected XML file?')) {
+            const formData = new FormData();
+            formData.append('file', file);
+            fetch('/import', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Import successful!');
+                    window.location.href = '/users';
+                } else {
+                    alert('Import failed: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(err => alert('Error: ' + err));
+        }
+    });
+    </script>
+</body>
+</html>
