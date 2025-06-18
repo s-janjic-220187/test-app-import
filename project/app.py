@@ -334,18 +334,16 @@ def edit_test_user():
 def migrate_imported_users():
     conn = mysql.connector.connect(**DB_CONFIG)
     cur = conn.cursor()
-    # Copy all users from test_user to user, skipping existing ids
+    # Overwrite all users in user table with those from test_user
+    cur.execute("DELETE FROM user")
     cur.execute("SELECT * FROM test_user")
     test_users = cur.fetchall()
     cur.execute("SHOW COLUMNS FROM test_user")
     columns = [col[0] for col in cur.fetchall()]
     for user in test_users:
         user_dict = dict(zip(columns, user))
-        # Check if user already exists in user table
-        cur.execute("SELECT id FROM user WHERE id=%s", (user_dict['id'],))
-        if not cur.fetchone():
-            cur.execute("INSERT INTO user (id, first_name, middle_name, last_name, date_of_birth, created_on, is_active) VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                (user_dict['id'], user_dict['first_name'], user_dict['middle_name'], user_dict['last_name'], user_dict['date_of_birth'], user_dict['created_on'], user_dict['is_active']))
+        cur.execute("INSERT INTO user (id, first_name, middle_name, last_name, date_of_birth, created_on, is_active) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (user_dict['id'], user_dict['first_name'], user_dict['middle_name'], user_dict['last_name'], user_dict['date_of_birth'], user_dict['created_on'], user_dict['is_active']))
     conn.commit()
     cur.close()
     conn.close()

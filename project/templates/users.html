@@ -57,7 +57,7 @@
                     <tr>
                         {% for item in row %}
                         {% set idx = loop.index0 %}
-                        {% if editable and col_names_raw[idx] != 'id' %}
+                        {% if editable %}
                         <td contenteditable="true" data-row="{{ row_idx }}" data-col="{{ col_names_raw[idx] }}">{{ item }}</td>
                         {% else %}
                         <td>{{ item }}</td>

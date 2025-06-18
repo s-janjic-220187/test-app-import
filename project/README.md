@@ -15,7 +15,7 @@ A modern Flask web application for importing, viewing, and managing user data an
 - **FullCalendar CSS:** FullCalendar is now styled using a local CSS file, ensuring robust and consistent appearance without CDN or CORS issues.
 - **User import draft:** Imported users are first loaded into a draft table (formerly `test_user`).
 - **Edit draft users:** You can edit draft user records inline before migration.
-- **Migrate to User Table:** Click the 'Migrate to User Table' button to move all draft users to the main User table (skipping existing IDs).
+- **Migrate to User Table:** Now, migration will completely overwrite the User table with the current contents of the User import draft. Any changes in the draft are fully reflected after migration.
 
 ## Usage
 1. **Home:** Visit `/` to see the landing page.
