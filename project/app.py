@@ -140,7 +140,7 @@ def events_page():
     return render_template('events.html')
 
 @app.route('/api/events', methods=['GET', 'POST'])
-@app.route('/api/events/<int:event_id>', methods=['PUT', 'DELETE'])
+@app.route('/api/events/<int:event_id>', methods=['GET', 'PUT', 'DELETE'])
 def api_events(event_id=None):
     conn = mysql.connector.connect(**DB_CONFIG)
     cur = conn.cursor(dictionary=True)
@@ -170,18 +170,40 @@ def api_events(event_id=None):
         cur.close()
         conn.close()
         return jsonify({'success': True})
+    elif request.method == 'GET' and event_id is not None:
+        cur.execute("SELECT id, title, event_type, event_date FROM events WHERE id=%s", (event_id,))
+        event = cur.fetchone()
+        cur.close()
+        conn.close()
+        if event:
+            return jsonify({
+                'id': event['id'],
+                'title': event['title'],
+                'event_type': event['event_type'],
+                'event_date': str(event['event_date'])
+            })
+        else:
+            return jsonify({'error': 'Event not found'}), 404
     else:
-        cur.execute("SELECT id, title, event_type, event_date FROM events")
+        # Support date range filtering for FullCalendar
+        start = request.args.get('start')
+        end = request.args.get('end')
+        if start and end:
+            cur.execute("SELECT id, title, event_type, event_date FROM events WHERE event_date >= %s AND event_date <= %s", (start, end))
+        else:
+            cur.execute("SELECT id, title, event_type, event_date FROM events")
         events = cur.fetchall()
         cur.close()
         conn.close()
-        # FullCalendar expects [{title, start, ...}]
+        # Color code by event type
+        type_colors = {'Rodjendan': '#ff8a00', 'Slava': '#2575fc', 'Veselje': '#e52e71'}
         return jsonify([
             {
                 'id': e['id'],
                 'title': e['title'],
                 'start': e['event_date'],
-                'event_type': e['event_type']
+                'event_type': e['event_type'],
+                'color': type_colors.get(e['event_type'], '#2575fc')
             } for e in events
         ])
 

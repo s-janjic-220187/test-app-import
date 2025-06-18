@@ -11,6 +11,8 @@ A modern Flask web application for importing, viewing, and managing test user da
 - **Responsive Design:** Works well on both web and Android/mobile browsers.
 - **Modern UI:** Uses Bootstrap, FullCalendar, and custom CSS for a clean, attractive look.
 - **Database Healthcheck:** Docker Compose healthcheck for MariaDB now uses the correct root user and password, preventing access denied warnings and ensuring reliable startup.
+- **Favicon:** Added a favicon for browser tab icon. No more 404 errors for /favicon.ico.
+- **FullCalendar CSS:** FullCalendar is now styled using a local CSS file, ensuring robust and consistent appearance without CDN or CORS issues.
 
 ## Usage
 1. **Home:** Visit `/` to see the landing page.
