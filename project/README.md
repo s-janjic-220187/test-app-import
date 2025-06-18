@@ -1,15 +1,15 @@
-# Test Load App
+# Slava Pivcu app !
 
-A modern Flask web application for importing, viewing, and managing test user data and events (Rodjendani, slave i veselja) from XML files. Designed for both desktop and mobile browsers with a responsive, engaging UI.
+A modern Flask web application for importing, viewing, and managing user data and events (Rodjendani, slave i veselja) from XML files. Designed for both desktop and mobile browsers with a responsive, engaging UI.
 
 ## Features
-- **Landing Page:** Welcoming home page with modern design.
+- **Landing Page:** Welcoming home page with modern design and new app name.
 - **User Table:** View and sort users from either the `user` or `test_user` tables.
 - **Import Users:** Dedicated page with documentation and example XML format. Import users from an XML file into the `test_user` table.
-- **Events Calendar:** View, add, edit, and delete events (Rodjendan, Slava, Veselje) in a stylish calendar. User birthdays are automatically synced as 'Rodjendan' events.
-- **Calendar Improvements:** Events are now clearly visible on the calendar, and a date picker allows you to jump to any month. You can add, edit, and delete events directly from the calendar interface.
+- **Events Calendar:** View, add, edit, and delete events (Rodjendan, Slava, Veselje) in a stylish calendar. User birthdays are automatically synced as 'Rodjendan' events. Clicking a birthday event opens a modern modal with full user info and edit option.
+- **Modern Date Picker:** User date of birth uses a modern Flatpickr date picker for a better experience.
 - **Responsive Design:** Works well on both web and Android/mobile browsers.
-- **Modern UI:** Uses Bootstrap, FullCalendar, and custom CSS for a clean, attractive look.
+- **Modern UI:** Uses Bootstrap, FullCalendar, Flatpickr, and custom CSS for a clean, attractive look.
 - **Database Healthcheck:** Docker Compose healthcheck for MariaDB now uses the correct root user and password, preventing access denied warnings and ensuring reliable startup.
 - **Favicon:** Added a favicon for browser tab icon. No more 404 errors for /favicon.ico.
 - **FullCalendar CSS:** FullCalendar is now styled using a local CSS file, ensuring robust and consistent appearance without CDN or CORS issues.
@@ -18,10 +18,10 @@ A modern Flask web application for importing, viewing, and managing test user da
 1. **Home:** Visit `/` to see the landing page.
 2. **User Management:** Go to `/users` to view and sort user data. Use the sidebar to switch between tables.
 3. **Import Users:** Click "Import Users" in the sidebar or visit `/import` for documentation and to upload your XML file.
-4. **Events Calendar:** Click "Rodjendani, slave i veselja" in the sidebar or visit `/events` to view and manage events. Click a date to add, or click an event to edit/delete.
+4. **Events Calendar:** Click "Rodjendani, slave i veselja" in the sidebar or visit `/events` to view and manage events. Click a date to add, or click an event to edit/delete. User birthdays are color-coded and editable via a modern modal.
 
 ## XML Import Format Example
-```
+```xml
 <users>
     <user>
         <id>1</id>
@@ -48,9 +48,12 @@ project/
 │     ├── landing.html
 │     ├── users.html
 │     ├── import.html
-│     └── events.html
+│     ├── events.html
+│     └── _user_modal.html
 ├── /static
-│     └── style.css
+│     ├── style.css
+│     ├── fullcalendar.min.css
+│     └── favicon.ico
 ├── /db_data
 │     └── ...
 └── ...
@@ -91,4 +94,4 @@ python migrations/migrate.py
 
 ---
 
-**Enjoy managing your test user data and events!**
+**Enjoy managing your user data and events with Slava Pivcu app !**

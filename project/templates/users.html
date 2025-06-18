@@ -37,7 +37,7 @@
                 <thead>
                     <tr>
                         {% for col, raw in zip(col_names, col_names_raw) %}
-                            <th onclick="window.location='/?table={{ table }}&sort={{ raw }}&direction={% if sort == raw and direction == 'asc' %}desc{% else %}asc{% endif %}'">
+                            <th onclick="window.location='/users?table={{ table }}&sort={{ raw }}&direction={% if sort == raw and direction == 'asc' %}desc{% else %}asc{% endif %}'">
                                 {{ col }}
                                 {% if sort == raw %}
                                     {% if direction == 'asc' %}▲{% else %}▼{% endif %}

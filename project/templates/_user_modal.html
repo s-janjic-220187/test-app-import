@@ -1,0 +1,42 @@
+<!-- Modal for user info (shown when clicking a birthday event) -->
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">User Info</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="userForm">
+          <input type="hidden" id="userId">
+          <div class="mb-3">
+            <label for="userFirstName" class="form-label">First Name</label>
+            <input type="text" class="form-control" id="userFirstName" required>
+          </div>
+          <div class="mb-3">
+            <label for="userMiddleName" class="form-label">Middle Name</label>
+            <input type="text" class="form-control" id="userMiddleName">
+          </div>
+          <div class="mb-3">
+            <label for="userLastName" class="form-label">Last Name</label>
+            <input type="text" class="form-control" id="userLastName" required>
+          </div>
+          <div class="mb-3">
+            <label for="userDOB" class="form-label">Date of Birth</label>
+            <input type="text" class="form-control flatpickr" id="userDOB" required placeholder="YYYY-MM-DD">
+          </div>
+          <div class="mb-3">
+            <label for="userActive" class="form-label">Active</label>
+            <select class="form-select" id="userActive">
+              <option value="1">Yes</option>
+              <option value="0">No</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-gradient">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

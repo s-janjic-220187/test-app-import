@@ -185,27 +185,41 @@ def api_events(event_id=None):
         else:
             return jsonify({'error': 'Event not found'}), 404
     else:
-        # Support date range filtering for FullCalendar
+        # Accept and log query params for debugging
         start = request.args.get('start')
         end = request.args.get('end')
-        if start and end:
-            cur.execute("SELECT id, title, event_type, event_date FROM events WHERE event_date >= %s AND event_date <= %s", (start, end))
-        else:
-            cur.execute("SELECT id, title, event_type, event_date FROM events")
+        print(f"/api/events called with start={start}, end={end}")
+        # Fetch events from events table
+        cur.execute("SELECT id, title, event_type, event_date FROM events")
         events = cur.fetchall()
+        # Fetch all user birthdays
+        cur.execute("SELECT id, first_name, last_name, date_of_birth FROM user")
+        users = cur.fetchall()
+        print('API /api/events returning:', events)
         cur.close()
         conn.close()
-        # Color code by event type
         type_colors = {'Rodjendan': '#ff8a00', 'Slava': '#2575fc', 'Veselje': '#e52e71'}
-        return jsonify([
+        # Convert user birthdays to events
+        user_birthday_events = [
+            {
+                'id': f'user-{u["id"]}',
+                'title': f'{u["first_name"]} {u["last_name"]}',
+                'start': str(u['date_of_birth']),
+                'event_type': 'Rodjendan',
+                'color': type_colors['Rodjendan']
+            } for u in users if u['date_of_birth']
+        ]
+        # Convert regular events
+        db_events = [
             {
                 'id': e['id'],
                 'title': e['title'],
-                'start': e['event_date'],
+                'start': str(e['event_date']),
                 'event_type': e['event_type'],
                 'color': type_colors.get(e['event_type'], '#2575fc')
             } for e in events
-        ])
+        ]
+        return jsonify(user_birthday_events + db_events)
 
 @app.route('/sync_users_to_events')
 def sync_users_to_events():
@@ -231,6 +245,41 @@ def sync_users_to_events():
     cur.close()
     conn.close()
     return f'Synced {added} rodjendan events from users.'
+
+@app.route('/api/user/<int:user_id>', methods=['GET', 'PUT'])
+def api_user(user_id):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor(dictionary=True)
+    if request.method == 'GET':
+        cur.execute("SELECT * FROM user WHERE id=%s", (user_id,))
+        user = cur.fetchone()
+        cur.close()
+        conn.close()
+        if user:
+            # Format date_of_birth as YYYY-MM-DD for input type="date"
+            dob = user.get('date_of_birth')
+            if dob:
+                user['date_of_birth'] = str(dob)[:10]
+            return jsonify(user)
+        else:
+            return jsonify({'error': 'User not found'}), 404
+    elif request.method == 'PUT':
+        data = request.get_json()
+        cur.execute("""
+            UPDATE user SET first_name=%s, middle_name=%s, last_name=%s, date_of_birth=%s, is_active=%s
+            WHERE id=%s
+        """, (
+            data.get('first_name'),
+            data.get('middle_name'),
+            data.get('last_name'),
+            data.get('date_of_birth'),
+            data.get('is_active', 1),
+            user_id
+        ))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
 
 if __name__ == '__main__':
     app.run(debug=True)

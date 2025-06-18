@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome | Test Load App</title>
+    <title>Welcome | Slava Pivcu app !</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
@@ -11,13 +11,11 @@
 <body class="landing-bg">
     <div class="d-flex flex-column justify-content-center align-items-center vh-100">
         <div class="welcome-card text-center shadow-lg p-5 rounded">
-            <h1 class="display-3 fw-bold mb-3 gradient-text">Welcome to Test Load App</h1>
+            <h1 class="display-3 fw-bold mb-3 gradient-text">Welcome to Slava Pivcu app !</h1>
             <p class="lead mb-4">Easily import, view, and manage your test user data with a modern, responsive interface.</p>
             <a href="/users" class="btn btn-lg btn-gradient">Go to User Tables</a>
         </div>
     </div>
-    <div class="back-link position-fixed top-0 start-0 m-3">
-        <a href="javascript:history.back()" class="btn btn-outline-secondary btn-back">&larr; Back</a>
-    </div>
+    <!-- Removed back-link from landing page -->
 </body>
 </html>
