@@ -1,11 +1,11 @@
-# Slava Pivcu app !
+# Srkijev Pivce Planer App 🍺
 
 A modern Flask web application for importing, viewing, and managing user data and events (Rodjendani, slave i veselja) from XML files. Designed for both desktop and mobile browsers with a responsive, engaging UI.
 
 ## Features
-- **Landing Page:** Welcoming home page with modern design and new app name.
-- **User Table:** View and sort users from either the `user` or `test_user` tables.
-- **Import Users:** Dedicated page with documentation and example XML format. Import users from an XML file into the `test_user` table.
+- **Landing Page:** Welcoming home page with modern design and new app name: Srkijev Pivce Planer App.
+- **User Table:** View and sort users from either the `user` or **User import draft** tables.
+- **Import Users:** Dedicated page with documentation and example XML format. Import users from an XML file into the **User import draft** table.
 - **Events Calendar:** View, add, edit, and delete events (Rodjendan, Slava, Veselje) in a stylish calendar. User birthdays are automatically synced as 'Rodjendan' events. Clicking a birthday event opens a modern modal with full user info and edit option.
 - **Modern Date Picker:** User date of birth uses a modern Flatpickr date picker for a better experience.
 - **Responsive Design:** Works well on both web and Android/mobile browsers.
@@ -14,8 +14,10 @@ A modern Flask web application for importing, viewing, and managing user data an
 - **Favicon:** Added a favicon for browser tab icon. No more 404 errors for /favicon.ico.
 - **FullCalendar CSS:** FullCalendar is now styled using a local CSS file, ensuring robust and consistent appearance without CDN or CORS issues.
 - **User import draft:** Imported users are first loaded into a draft table (formerly `test_user`).
-- **Edit draft users:** You can edit draft user records inline before migration.
+- **Edit draft users:** You can edit all draft user records inline before migration.
 - **Migrate to User Table:** Now, migration will completely overwrite the User table with the current contents of the User import draft. Any changes in the draft are fully reflected after migration.
+- **Beer branding:** The landing page features a beer-themed background image and a beer icon as the favicon for a fun, unique look.
+- **Watermark:** Every page displays a subtle "Janjic enterprises®" watermark for branding.
 
 ## Usage
 1. **Home:** Visit `/` to see the landing page.
@@ -113,4 +115,4 @@ python migrations/migrate.py
 
 ---
 
-**Enjoy managing your user data and events with Slava Pivcu app !**
+**Enjoy managing your user data and events with Srkijev Pivce Planer App !**

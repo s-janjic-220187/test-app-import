@@ -6,16 +6,60 @@
     <title>Welcome | Slava Pivcu app !</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='beer-favicon.png') }}">
+    <style>
+        body.landing-bg {
+            background: url('{{ url_for('static', filename='beer-bg.jpg') }}') center center/cover no-repeat fixed, #ffe066;
+        }
+    </style>
 </head>
-<body class="landing-bg">
-    <div class="d-flex flex-column justify-content-center align-items-center vh-100">
+<body class="landing-bg position-relative overflow-hidden">
+    <!-- Beer bubbles animation background -->
+    <div id="beer-bubbles-bg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0;pointer-events:none;"></div>
+    <div class="d-flex flex-column justify-content-center align-items-center vh-100 position-relative" style="z-index:1;">
         <div class="welcome-card text-center shadow-lg p-5 rounded">
-            <h1 class="display-3 fw-bold mb-3 gradient-text">Welcome to Slava Pivcu app !</h1>
-            <p class="lead mb-4">Easily import, view, and manage your test user data with a modern, responsive interface.</p>
+            <h1 class="display-3 fw-bold mb-3 gradient-text">Welcome to Srkijev Pivce planer app !</h1>
+            <p class="lead mb-4">Easily plan, arrange and manage your beer drinking schedule with a modern, responsive interface.</p>
             <a href="/users" class="btn btn-lg btn-gradient">Go to User Tables</a>
         </div>
     </div>
     <!-- Removed back-link from landing page -->
+    <div style="position:fixed;bottom:10px;right:20px;z-index:9999;opacity:0.25;font-size:1.2rem;font-family:monospace;pointer-events:none;user-select:none;">
+        janjic enterprises
+    </div>
+    <script>
+        // Simple beer bubbles animation (bigger and more visible)
+        const bubbleColors = ['#f8e16c', '#ffe066', '#fff3bf', '#ffd700'];
+        function randomBetween(a, b) { return a + Math.random() * (b - a); }
+        function createBubble() {
+            const bubble = document.createElement('div');
+            const size = randomBetween(10, 32);
+            bubble.style.position = 'absolute';
+            bubble.style.left = `${randomBetween(0, 100)}vw`;
+            bubble.style.bottom = '-40px';
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.borderRadius = '50%';
+            bubble.style.background = bubbleColors[Math.floor(Math.random()*bubbleColors.length)];
+            bubble.style.opacity = randomBetween(0.4, 0.8);
+            bubble.style.filter = 'blur(1px)';
+            bubble.style.boxShadow = `0 0 8px 2px #fffbe7`;
+            bubble.style.pointerEvents = 'none';
+            bubble.style.transition = `transform ${randomBetween(4,8)}s linear, opacity 1s linear`;
+            document.getElementById('beer-bubbles-bg').appendChild(bubble);
+
+            setTimeout(() => {
+                bubble.style.transform = `translateY(-110vh) scale(${randomBetween(0.8, 1.2)})`;
+                bubble.style.opacity = '0';
+            }, 10);
+
+            setTimeout(() => {
+                bubble.remove();
+            }, 9000);
+        }
+        setInterval(createBubble, 350);
+        // Initial bubbles
+        for(let i=0;i<12;i++) setTimeout(createBubble, i*300);
+    </script>
 </body>
 </html>
