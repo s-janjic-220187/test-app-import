@@ -37,6 +37,7 @@ MIGRATIONS_DIR = os.path.join(os.path.dirname(__file__))
 
 
 def run_migrations():
+    print('DB_CONFIG:', DB_CONFIG)  # Debug print for Railway deployment
     conn = mysql.connector.connect(**DB_CONFIG)
     cur = conn.cursor()
     for fname in sorted(f for f in os.listdir(MIGRATIONS_DIR) if f.endswith('.sql')):
