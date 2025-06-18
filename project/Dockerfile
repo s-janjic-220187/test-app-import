@@ -23,5 +23,5 @@ COPY . .
 # Expose port
 EXPOSE 5000
 
-# Railway: Use gunicorn for production
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+# Railway: Run the Flask app and migrations at container startup
+CMD ["sh", "-c", "python migrations/migrate.py && gunicorn -b 0.0.0.0:5000 app:app"]
