@@ -5,6 +5,7 @@ import io
 import subprocess
 import os
 import re
+import logging
 
 def get_env(*names, default=None):
     for name in names:
@@ -348,6 +349,30 @@ def migrate_imported_users():
     cur.close()
     conn.close()
     return redirect(url_for('show_users', table='user'))
+
+@app.route('/log')
+def log_page():
+    return render_template('log.html')
+
+@app.route('/stream_log')
+def stream_log():
+    def generate():
+        import time
+        logfile = 'app.log'
+        try:
+            with open(logfile, 'r') as f:
+                f.seek(0, 2)  # Go to end of file
+                while True:
+                    line = f.readline()
+                    if line:
+                        yield f'data: {line}\n\n'
+                    else:
+                        time.sleep(1)
+        except Exception as e:
+            yield f'data: Log file not found or error: {e}\n\n'
+    return app.response_class(generate(), mimetype='text/event-stream')
+
+logging.basicConfig(filename='app.log', level=logging.INFO, format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
 
 if __name__ == '__main__':
     app.run(debug=True)

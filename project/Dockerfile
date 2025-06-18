@@ -24,4 +24,4 @@ COPY . .
 EXPOSE 5000
 
 # Railway: Run the Flask app and migrations at container startup
-CMD ["sh", "-c", "python migrations/migrate.py && gunicorn -b 0.0.0.0:5000 app:app"]
+CMD ["sh", "-c", "python migrations/migrate.py && gunicorn -k gevent -b 0.0.0.0:5000 app:app"]
