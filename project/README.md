@@ -7,6 +7,7 @@ A modern Flask web application for importing, viewing, and managing test user da
 - **User Table:** View and sort users from either the `user` or `test_user` tables.
 - **Import Users:** Dedicated page with documentation and example XML format. Import users from an XML file into the `test_user` table.
 - **Events Calendar:** View, add, edit, and delete events (Rodjendan, Slava, Veselje) in a stylish calendar. User birthdays are automatically synced as 'Rodjendan' events.
+- **Calendar Improvements:** Events are now clearly visible on the calendar, and a date picker allows you to jump to any month. You can add, edit, and delete events directly from the calendar interface.
 - **Responsive Design:** Works well on both web and Android/mobile browsers.
 - **Modern UI:** Uses Bootstrap, FullCalendar, and custom CSS for a clean, attractive look.
 - **Database Healthcheck:** Docker Compose healthcheck for MariaDB now uses the correct root user and password, preventing access denied warnings and ensuring reliable startup.
