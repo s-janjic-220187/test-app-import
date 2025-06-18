@@ -78,6 +78,13 @@ project/
    ```
 2. Your app will be available on port 5000, and MariaDB on 3306.
 
+## Database migrations
+All required tables are created automatically on app startup using SQL scripts in the `migrations/` folder. You can also run them manually:
+
+```sh
+python migrations/migrate.py
+```
+
 ---
 
 **Enjoy managing your test user data and events!**

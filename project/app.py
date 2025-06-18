@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 import mysql.connector
-
-app = Flask(__name__)
+import xml.etree.ElementTree as ET
+import io
+import subprocess
 
 # Update these with your MariaDB credentials
 DB_CONFIG = {
@@ -11,6 +12,35 @@ DB_CONFIG = {
     'password': 'root',
     'database': 'python_dev'
 }
+
+def ensure_events_table():
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS events (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(100) NOT NULL,
+            event_type ENUM('Rodjendan', 'Slava', 'Veselje') NOT NULL,
+            event_date DATE NOT NULL
+        )
+    """)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+# Run DB migrations before anything else
+try:
+    subprocess.run(['python', 'migrations/migrate.py'], check=True)
+except Exception as e:
+    print('Migration failed:', e)
+
+# Ensure events table exists before app is created
+try:
+    ensure_events_table()
+except Exception:
+    pass
+
+app = Flask(__name__)
 
 @app.route('/')
 def landing():
@@ -64,8 +94,6 @@ def import_users():
     if not file or not file.filename.endswith('.xml'):
         return jsonify({'success': False, 'error': 'Invalid file type'})
     try:
-        import io
-        import xml.etree.ElementTree as ET
         xml_data = file.read()
         tree = ET.parse(io.BytesIO(xml_data))
         root = tree.getroot()
@@ -106,21 +134,6 @@ def import_users():
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
-
-def ensure_events_table():
-    conn = mysql.connector.connect(**DB_CONFIG)
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS events (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(100) NOT NULL,
-            event_type ENUM('Rodjendan', 'Slava', 'Veselje') NOT NULL,
-            event_date DATE NOT NULL
-        )
-    """)
-    conn.commit()
-    cur.close()
-    conn.close()
 
 @app.route('/events')
 def events_page():
@@ -198,10 +211,5 @@ def sync_users_to_events():
     return f'Synced {added} rodjendan events from users.'
 
 if __name__ == '__main__':
-    try:
-        ensure_events_table()
-        sync_users_to_events()
-    except Exception:
-        pass
     app.run(debug=True)
 
