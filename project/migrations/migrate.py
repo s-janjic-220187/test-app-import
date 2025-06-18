@@ -1,12 +1,19 @@
 import os
 import mysql.connector
 
+def get_env(*names, default=None):
+    for name in names:
+        v = os.environ.get(name)
+        if v is not None:
+            return v
+    return default
+
 DB_CONFIG = {
-    'host': os.environ.get('MYSQL_HOST', 'db'),
-    'port': int(os.environ.get('MYSQL_PORT', 3306)),
-    'user': os.environ.get('MYSQL_USER', 'root'),
-    'password': os.environ.get('MYSQL_PASSWORD', 'root'),
-    'database': os.environ.get('MYSQL_DATABASE', 'python_dev')
+    'host': get_env('MYSQL_HOST', 'MYSQLHOST', default='db'),
+    'port': int(get_env('MYSQL_PORT', 'MYSQLPORT', default=3306)),
+    'user': get_env('MYSQL_USER', 'MYSQLUSER', default='root'),
+    'password': get_env('MYSQL_PASSWORD', 'MYSQLPASSWORD', default='root'),
+    'database': get_env('MYSQL_DATABASE', 'MYSQLDATABASE', default='python_dev')
 }
 
 MIGRATIONS_DIR = os.path.join(os.path.dirname(__file__))
