@@ -381,7 +381,10 @@ def test_page():
 def run_tests():
     import subprocess
     try:
-        result = subprocess.run(['pytest', 'tests', '--maxfail=1', '--disable-warnings', '-q'], capture_output=True, text=True, timeout=30)
+        # Use verbose output and show summary, test names, and short log
+        result = subprocess.run([
+            'pytest', 'tests', '--maxfail=1', '--disable-warnings', '-v', '--tb=short', '--show-capture=log', '--durations=10', '--summary', '--color=yes'
+        ], capture_output=True, text=True, timeout=30)
         output = result.stdout + '\n' + result.stderr
         success = result.returncode == 0
     except Exception as e:
@@ -397,8 +400,12 @@ logging.basicConfig(
     handlers=[
         logging.FileHandler("app.log"),
         logging.StreamHandler(sys.stdout)
-    ]
+    ],
+    force=True  # Ensure handlers are replaced and logs are flushed immediately
 )
+# Ensure Flask's logger uses the same handlers and level
+app.logger.handlers = logging.getLogger().handlers
+app.logger.setLevel(logging.INFO)
 
 if __name__ == '__main__':
     app.run(debug=True)
