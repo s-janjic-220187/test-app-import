@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="{{ url_for('static', filename='chart.min.js') }}"></script>
 </head>
 <body>
 <div class="sidebar">
@@ -22,9 +23,60 @@
         <h2 class="mb-4 gradient-text">Automated Test Runner</h2>
         <button id="runTestBtn" class="btn btn-gradient mb-3">Run Tests</button>
         <pre id="testOutput" style="background:#222;color:#ffe066;padding:1rem;border-radius:1rem;min-height:200px;"></pre>
+        <div class="my-4">
+            <canvas id="testChart" height="80"></canvas>
+        </div>
     </div>
 </div>
 <script>
+function parseTestResults(output) {
+    // Parse pytest verbose output for test names and results
+    const lines = output.split('\n');
+    const testResults = [];
+    for (let line of lines) {
+        // Example: test_basic.py::test_landing_page PASSED
+        let m = line.match(/([\w\./:]+)::(test_\w+) +(PASSED|FAILED|ERROR|SKIPPED)/);
+        if (m) {
+            testResults.push({name: m[2], result: m[3]});
+        }
+    }
+    return testResults;
+}
+
+function updateChart(testResults) {
+    const ctx = document.getElementById('testChart').getContext('2d');
+    const counts = {PASSED: 0, FAILED: 0, ERROR: 0, SKIPPED: 0};
+    testResults.forEach(r => { counts[r.result] = (counts[r.result]||0)+1; });
+    const data = {
+        labels: Object.keys(counts),
+        datasets: [{
+            label: 'Test Results',
+            data: Object.values(counts),
+            backgroundColor: [
+                '#28a745', // PASSED
+                '#dc3545', // FAILED
+                '#ffc107', // ERROR
+                '#6c757d'  // SKIPPED
+            ]
+        }]
+    };
+    if (window.testChartInstance) window.testChartInstance.destroy();
+    window.testChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+            animation: {duration: 800},
+            plugins: {
+                legend: {display: false},
+                title: {display: true, text: 'Test Execution Results'}
+            },
+            scales: {
+                y: {beginAtZero: true, precision:0}
+            }
+        }
+    });
+}
+
 document.getElementById('runTestBtn').onclick = function() {
     const btn = this;
     btn.disabled = true;
@@ -33,6 +85,8 @@ document.getElementById('runTestBtn').onclick = function() {
         .then(res => res.json())
         .then(data => {
             document.getElementById('testOutput').textContent = data.output;
+            const testResults = parseTestResults(data.output);
+            updateChart(testResults);
             btn.disabled = false;
             btn.textContent = 'Run Tests';
         })
