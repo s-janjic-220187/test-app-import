@@ -13,6 +13,9 @@ A modern Flask web application for importing, viewing, and managing user data an
 - **Database Healthcheck:** Docker Compose healthcheck for MariaDB now uses the correct root user and password, preventing access denied warnings and ensuring reliable startup.
 - **Favicon:** Added a favicon for browser tab icon. No more 404 errors for /favicon.ico.
 - **FullCalendar CSS:** FullCalendar is now styled using a local CSS file, ensuring robust and consistent appearance without CDN or CORS issues.
+- **User import draft:** Imported users are first loaded into a draft table (formerly `test_user`).
+- **Edit draft users:** You can edit draft user records inline before migration.
+- **Migrate to User Table:** Click the 'Migrate to User Table' button to move all draft users to the main User table (skipping existing IDs).
 
 ## Usage
 1. **Home:** Visit `/` to see the landing page.

@@ -106,7 +106,8 @@ def show_users():
         table=table,
         sort=sort,
         direction=direction,
-        zip=zip
+        zip=zip,
+        editable=(table == 'test_user')
     )
 
 @app.route('/import', methods=['GET', 'POST'])
@@ -305,6 +306,50 @@ def api_user(user_id):
         cur.close()
         conn.close()
         return jsonify({'success': True})
+
+@app.route('/api/edit_test_user', methods=['POST'])
+def edit_test_user():
+    data = request.get_json()
+    id = data.get('id')
+    col = data.get('col')
+    value = data.get('value')
+    if not id or not col:
+        return jsonify({'success': False, 'error': 'Missing id or column'})
+    if col not in ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'created_on', 'is_active']:
+        return jsonify({'success': False, 'error': 'Invalid column'})
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor()
+    try:
+        cur.execute(f"UPDATE test_user SET {col}=%s WHERE id=%s", (value, id))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    except Exception as e:
+        cur.close()
+        conn.close()
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/migrate_imported_users')
+def migrate_imported_users():
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor()
+    # Copy all users from test_user to user, skipping existing ids
+    cur.execute("SELECT * FROM test_user")
+    test_users = cur.fetchall()
+    cur.execute("SHOW COLUMNS FROM test_user")
+    columns = [col[0] for col in cur.fetchall()]
+    for user in test_users:
+        user_dict = dict(zip(columns, user))
+        # Check if user already exists in user table
+        cur.execute("SELECT id FROM user WHERE id=%s", (user_dict['id'],))
+        if not cur.fetchone():
+            cur.execute("INSERT INTO user (id, first_name, middle_name, last_name, date_of_birth, created_on, is_active) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+                (user_dict['id'], user_dict['first_name'], user_dict['middle_name'], user_dict['last_name'], user_dict['date_of_birth'], user_dict['created_on'], user_dict['is_active']))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('show_users', table='user'))
 
 if __name__ == '__main__':
     app.run(debug=True)

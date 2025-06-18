@@ -15,7 +15,7 @@
     <a href="/events">🎉 Rodjendani, slave i veselja</a>
     <select id="table-select">
         <option value="user" {% if table == 'user' %}selected{% endif %}>User Table</option>
-        <option value="test_user" {% if table == 'test_user' %}selected{% endif %}>Test User Table</option>
+        <option value="test_user" {% if table == 'test_user' %}selected{% endif %}>User import draft</option>
     </select>
     <script>
     document.getElementById('table-select').addEventListener('change', function(e) {
@@ -28,7 +28,12 @@
 </div>
 <div class="main-content">
     <div class="container-fluid">
-        <h2 class="mb-4">User List</h2>
+        <h2 class="mb-4">User List{% if table == 'test_user' %} (User import draft){% endif %}</h2>
+        {% if table == 'test_user' %}
+        <div class="mb-3">
+            <a href="/migrate_imported_users" class="btn btn-success" onclick="return confirm('Migrate all users from User import draft to User table?');">Migrate to User Table</a>
+        </div>
+        {% endif %}
         <div class="back-link">
             <a href="javascript:history.back()" class="btn btn-outline-secondary btn-back">&larr; Back</a>
         </div>
@@ -49,8 +54,12 @@
                 <tbody>
                     {% for row in names %}
                     <tr>
-                        {% for item in row %}
+                        {% for idx, item in enumerate(row) %}
+                        {% if editable and col_names_raw[idx] != 'id' %}
+                        <td contenteditable="true" data-row="{{ loop.parentloop.index0 }}" data-col="{{ col_names_raw[idx] }}">{{ item }}</td>
+                        {% else %}
                         <td>{{ item }}</td>
+                        {% endif %}
                         {% endfor %}
                     </tr>
                     {% endfor %}
@@ -59,5 +68,25 @@
         </div>
     </div>
 </div>
+{% if editable %}
+    <script>
+    // Save edits to test_user table
+    document.querySelectorAll('td[contenteditable=true]').forEach(function(cell) {
+        cell.addEventListener('blur', function(e) {
+            const rowIdx = cell.getAttribute('data-row');
+            const col = cell.getAttribute('data-col');
+            const value = cell.innerText;
+            const id = document.querySelectorAll('tbody tr')[rowIdx].children[0].innerText;
+            fetch('/api/edit_test_user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, col, value })
+            }).then(res => res.json()).then(data => {
+                if (!data.success) alert('Error: ' + (data.error || 'Unknown error'));
+            });
+        });
+    });
+    </script>
+    {% endif %}
 </body>
 </html>
