@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import io
 import subprocess
 import os
+import re
 
 def get_env(*names, default=None):
     for name in names:
@@ -12,13 +13,29 @@ def get_env(*names, default=None):
             return v
     return default
 
+def parse_database_url(url):
+    # Example: mysql://user:pass@host:port/dbname
+    m = re.match(r'mysql://([^:]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?]+)', url)
+    if m:
+        return {
+            'user': m.group(1),
+            'password': m.group(2),
+            'host': m.group(3),
+            'port': int(m.group(4)) if m.group(4) else 3306,
+            'database': m.group(5)
+        }
+    return {}
+
+db_url = os.environ.get('DATABASE_URL')
+db_url_config = parse_database_url(db_url) if db_url else {}
+
 # Update these with your MariaDB credentials
 DB_CONFIG = {
-    'host': get_env('MYSQL_HOST', 'MYSQLHOST', default='db'),
-    'port': int(get_env('MYSQL_PORT', 'MYSQLPORT', default=3306)),
-    'user': get_env('MYSQL_USER', 'MYSQLUSER', default='root'),
-    'password': get_env('MYSQL_PASSWORD', 'MYSQLPASSWORD', default='root'),
-    'database': get_env('MYSQL_DATABASE', 'MYSQLDATABASE', default='python_dev')
+    'host': get_env('MYSQL_HOST', 'MYSQLHOST', default=db_url_config.get('host', 'db')),
+    'port': int(get_env('MYSQL_PORT', 'MYSQLPORT', default=db_url_config.get('port', 3306))),
+    'user': get_env('MYSQL_USER', 'MYSQLUSER', default=db_url_config.get('user', 'root')),
+    'password': get_env('MYSQL_PASSWORD', 'MYSQLPASSWORD', default=db_url_config.get('password', 'root')),
+    'database': get_env('MYSQL_DATABASE', 'MYSQLDATABASE', default=db_url_config.get('database', 'python_dev'))
 }
 
 def ensure_events_table():
