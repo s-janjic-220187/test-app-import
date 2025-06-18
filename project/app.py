@@ -6,6 +6,7 @@ import subprocess
 import os
 import re
 import logging
+import sys
 
 def get_env(*names, default=None):
     for name in names:
@@ -372,7 +373,32 @@ def stream_log():
             yield f'data: Log file not found or error: {e}\n\n'
     return app.response_class(generate(), mimetype='text/event-stream')
 
-logging.basicConfig(filename='app.log', level=logging.INFO, format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s')
+@app.route('/test')
+def test_page():
+    return render_template('test.html')
+
+@app.route('/run_tests', methods=['POST'])
+def run_tests():
+    import subprocess
+    try:
+        result = subprocess.run(['pytest', 'tests', '--maxfail=1', '--disable-warnings', '-q'], capture_output=True, text=True, timeout=30)
+        output = result.stdout + '\n' + result.stderr
+        success = result.returncode == 0
+    except Exception as e:
+        output = str(e)
+        success = False
+    return {'success': success, 'output': output}
+
+for handler in logging.root.handlers[:]:
+    logging.root.removeHandler(handler)
+logging.basicConfig(
+    level=logging.INFO,
+    format='[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
 
 if __name__ == '__main__':
     app.run(debug=True)
