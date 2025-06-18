@@ -351,28 +351,6 @@ def migrate_imported_users():
     conn.close()
     return redirect(url_for('show_users', table='user'))
 
-@app.route('/log')
-def log_page():
-    return render_template('log.html')
-
-@app.route('/stream_log')
-def stream_log():
-    def generate():
-        import time
-        logfile = 'app.log'
-        try:
-            with open(logfile, 'r') as f:
-                f.seek(0, 2)  # Go to end of file
-                while True:
-                    line = f.readline()
-                    if line:
-                        yield f'data: {line}\n\n'
-                    else:
-                        time.sleep(1)
-        except Exception as e:
-            yield f'data: Log file not found or error: {e}\n\n'
-    return app.response_class(generate(), mimetype='text/event-stream')
-
 @app.route('/test')
 def test_page():
     return render_template('test.html')
