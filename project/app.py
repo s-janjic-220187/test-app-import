@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 # Update these with your MariaDB credentials
 DB_CONFIG = {
-    'host': 'localhost',
+    'host': 'db',  # Use Docker Compose service name
     'port': 3306,
     'user': 'root',
     'password': 'root',
@@ -107,6 +107,101 @@ def import_users():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
+def ensure_events_table():
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor()
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS events (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(100) NOT NULL,
+            event_type ENUM('Rodjendan', 'Slava', 'Veselje') NOT NULL,
+            event_date DATE NOT NULL
+        )
+    """)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+@app.route('/events')
+def events_page():
+    return render_template('events.html')
+
+@app.route('/api/events', methods=['GET', 'POST'])
+@app.route('/api/events/<int:event_id>', methods=['PUT', 'DELETE'])
+def api_events(event_id=None):
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor(dictionary=True)
+    if request.method == 'POST':
+        data = request.get_json()
+        cur.execute(
+            "INSERT INTO events (title, event_type, event_date) VALUES (%s, %s, %s)",
+            (data['title'], data['event_type'], data['event_date'])
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    elif request.method == 'PUT' and event_id is not None:
+        data = request.get_json()
+        cur.execute(
+            "UPDATE events SET title=%s, event_type=%s, event_date=%s WHERE id=%s",
+            (data['title'], data['event_type'], data['event_date'], event_id)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    elif request.method == 'DELETE' and event_id is not None:
+        cur.execute("DELETE FROM events WHERE id=%s", (event_id,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({'success': True})
+    else:
+        cur.execute("SELECT id, title, event_type, event_date FROM events")
+        events = cur.fetchall()
+        cur.close()
+        conn.close()
+        # FullCalendar expects [{title, start, ...}]
+        return jsonify([
+            {
+                'id': e['id'],
+                'title': f"{e['title']} ({e['event_type']})",
+                'start': e['event_date'],
+                'event_type': e['event_type']
+            } for e in events
+        ])
+
+@app.route('/sync_users_to_events')
+def sync_users_to_events():
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cur = conn.cursor(dictionary=True)
+    # Get all users
+    cur.execute("SELECT id, first_name, last_name, date_of_birth FROM user")
+    users = cur.fetchall()
+    # Get all existing rodjendan events (by title and date)
+    cur.execute("SELECT title, event_date FROM events WHERE event_type='Rodjendan'")
+    existing = {(e['title'], str(e['event_date'])) for e in cur.fetchall()}
+    added = 0
+    for u in users:
+        title = f"{u['first_name']} {u['last_name']}"
+        date = str(u['date_of_birth'])
+        if (title, date) not in existing:
+            cur.execute(
+                "INSERT INTO events (title, event_type, event_date) VALUES (%s, %s, %s)",
+                (title, 'Rodjendan', date)
+            )
+            added += 1
+    conn.commit()
+    cur.close()
+    conn.close()
+    return f'Synced {added} rodjendan events from users.'
+
 if __name__ == '__main__':
+    try:
+        ensure_events_table()
+        sync_users_to_events()
+    except Exception:
+        pass
     app.run(debug=True)
 

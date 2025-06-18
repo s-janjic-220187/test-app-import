@@ -1,18 +1,20 @@
 # Test Load App
 
-A modern Flask web application for importing, viewing, and managing test user data from XML files. Designed for both desktop and mobile browsers with a responsive, engaging UI.
+A modern Flask web application for importing, viewing, and managing test user data and events (Rodjendani, slave i veselja) from XML files. Designed for both desktop and mobile browsers with a responsive, engaging UI.
 
 ## Features
 - **Landing Page:** Welcoming home page with modern design.
 - **User Table:** View and sort users from either the `user` or `test_user` tables.
 - **Import Users:** Dedicated page with documentation and example XML format. Import users from an XML file into the `test_user` table.
+- **Events Calendar:** View, add, edit, and delete events (Rodjendan, Slava, Veselje) in a stylish calendar. User birthdays are automatically synced as 'Rodjendan' events.
 - **Responsive Design:** Works well on both web and Android/mobile browsers.
-- **Modern UI:** Uses Bootstrap and custom CSS for a clean, attractive look.
+- **Modern UI:** Uses Bootstrap, FullCalendar, and custom CSS for a clean, attractive look.
 
 ## Usage
 1. **Home:** Visit `/` to see the landing page.
 2. **User Management:** Go to `/users` to view and sort user data. Use the sidebar to switch between tables.
 3. **Import Users:** Click "Import Users" in the sidebar or visit `/import` for documentation and to upload your XML file.
+4. **Events Calendar:** Click "Rodjendani, slave i veselja" in the sidebar or visit `/events` to view and manage events. Click a date to add, or click an event to edit/delete.
 
 ## XML Import Format Example
 ```
@@ -36,10 +38,13 @@ project/
 ├── app.py
 ├── importer.py
 ├── requirements.txt
+├── Dockerfile
+├── compose.yaml
 ├── /templates
 │     ├── landing.html
 │     ├── users.html
-│     └── import.html
+│     ├── import.html
+│     └── events.html
 ├── /static
 │     └── style.css
 ├── /db_data
@@ -52,6 +57,7 @@ project/
 - Flask
 - mysql-connector-python
 - MariaDB or MySQL server
+- Docker (for containerized deployment)
 
 ## Setup
 1. Install dependencies:
@@ -65,6 +71,13 @@ project/
    ```
 4. Open your browser to `http://localhost:5000/`.
 
+## Docker/Compose Deployment
+1. Build and start everything with:
+   ```sh
+   docker compose up --build
+   ```
+2. Your app will be available on port 5000, and MariaDB on 3306.
+
 ---
 
-**Enjoy managing your test user data!**
+**Enjoy managing your test user data and events!**

@@ -11,6 +11,7 @@
 <div class="sidebar">
     <a href="/">🏠 Home</a>
     <a href="/import">⬆️ Import Users</a>
+    <a href="/events">🎉 Rodjendani, slave i veselja</a>
     <select id="table-select">
         <option value="user" {% if table == 'user' %}selected{% endif %}>User Table</option>
         <option value="test_user" {% if table == 'test_user' %}selected{% endif %}>Test User Table</option>
@@ -27,6 +28,9 @@
 <div class="main-content">
     <div class="container-fluid">
         <h2 class="mb-4">User List</h2>
+        <div class="back-link">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-back">&larr; Back</a>
+        </div>
         <div class="table-responsive rounded shadow-sm">
             <table class="table table-striped table-bordered align-middle">
                 <thead>
