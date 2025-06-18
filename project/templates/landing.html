@@ -60,6 +60,20 @@
         setInterval(createBubble, 350);
         // Initial bubbles
         for(let i=0;i<12;i++) setTimeout(createBubble, i*300);
+
+        // Event alert for today
+        fetch('/api/events?start=today&end=today')
+            .then(res => res.json())
+            .then(events => {
+                const today = new Date().toISOString().slice(0, 10);
+                const todaysEvents = events.filter(e => e.start && e.start.slice(0,10) === today);
+                if (todaysEvents.length > 0) {
+                    let msg = 'Events scheduled for today:\n';
+                    msg += todaysEvents.map(e => `${e.title} (${e.start.slice(0,10)})`).join('\n');
+                    alert(msg);
+                }
+            })
+            .catch(()=>{});
     </script>
 </body>
 </html>
