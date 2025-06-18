@@ -1,14 +1,14 @@
 body {
-    background-color: #f8f9fa;
+    background-color: #fff3d1;
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
     min-height: 100vh;
 }
 .landing-bg {
-    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(135deg, #cc8a00 0%, #cc6e00 100%);
     min-height: 100vh;
 }
 .gradient-text {
-    background: linear-gradient(90deg, #ff8a00, #e52e71);
+    background: linear-gradient(90deg, #cc8a00, #cc6e00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -17,19 +17,19 @@ body {
 .welcome-card {
     background: rgba(255,255,255,0.95);
     border-radius: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(204, 110, 0, 0.15);
     max-width: 500px;
 }
 .btn-gradient {
-    background: linear-gradient(90deg, #ff8a00, #e52e71);
+    background: linear-gradient(90deg, #cc8a00, #cc6e00);
     color: #fff;
     border: none;
     transition: box-shadow 0.2s, transform 0.2s;
-    box-shadow: 0 2px 8px rgba(229,46,113,0.15);
+    box-shadow: 0 2px 8px rgba(204,110,0,0.15);
 }
 .btn-gradient:hover, .btn-gradient:focus {
     color: #fff;
-    box-shadow: 0 4px 16px rgba(229,46,113,0.25);
+    box-shadow: 0 4px 16px rgba(204,110,0,0.25);
     transform: translateY(-2px) scale(1.03);
 }
 .sidebar {
@@ -38,10 +38,10 @@ body {
     left: 0;
     height: 100vh;
     width: 180px;
-    background: linear-gradient(135deg, #343a40 60%, #2575fc 100%);
+    background: linear-gradient(135deg, #cc8a00 60%, #cc6e00 100%);
     color: #fff;
     padding-top: 40px;
-    box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+    box-shadow: 2px 0 8px rgba(204,110,0,0.05);
     z-index: 1000;
     transition: width 0.3s;
 }
@@ -60,7 +60,7 @@ body {
     border-radius: 0.5rem;
 }
 .sidebar a:hover, .sidebar label:hover, .sidebar select:hover {
-    background: rgba(37,117,252,0.2);
+    background: rgba(204,110,0,0.18);
 }
 .main-content {
     margin-left: 200px;
@@ -68,7 +68,7 @@ body {
     transition: margin-left 0.3s;
 }
 .table thead th {
-    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    background: linear-gradient(90deg, #cc8a00 0%, #cc6e00 100%);
     color: #fff;
     text-align: center;
     vertical-align: middle;
@@ -100,16 +100,16 @@ body {
     font-size: 1.1rem;
     border-radius: 2rem;
     padding: 0.5rem 1.5rem;
-    box-shadow: 0 2px 8px rgba(37,117,252,0.08);
+    box-shadow: 0 2px 8px rgba(204,110,0,0.08);
     background: #fff;
-    border: 2px solid #2575fc;
-    color: #2575fc;
+    border: 2px solid #cc6e00;
+    color: #cc6e00;
     transition: background 0.2s, color 0.2s, box-shadow 0.2s;
 }
 .btn-back:hover, .btn-back:focus {
-    background: #2575fc;
+    background: #cc6e00;
     color: #fff;
-    box-shadow: 0 4px 16px rgba(37,117,252,0.18);
+    box-shadow: 0 4px 16px rgba(204,110,0,0.18);
     text-decoration: none;
 }
 .back-link {
