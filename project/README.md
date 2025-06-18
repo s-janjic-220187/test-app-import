@@ -85,6 +85,23 @@ project/
    ```
 2. Your app will be available on port 5000, and MariaDB on 3306.
 
+## Railway deployment
+If deploying to Railway, set environment variables in the Railway dashboard or a .env file:
+- `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_USER`, `MYSQL_PASSWORD`, `MYSQL_DATABASE`
+
+Example .env (do NOT commit secrets!):
+```
+MYSQL_HOST=containers-...railway.app
+MYSQL_PORT=3306
+MYSQL_USER=railway
+MYSQL_PASSWORD=yourpassword
+MYSQL_DATABASE=railway
+```
+
+The app will auto-detect these and connect to Railway's managed MySQL/MariaDB.
+
+For local Docker Compose, defaults are used (see compose.yaml).
+
 ## Database migrations
 All required tables are created automatically on app startup using SQL scripts in the `migrations/` folder. You can also run them manually:
 

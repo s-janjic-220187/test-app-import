@@ -3,14 +3,15 @@ import mysql.connector
 import xml.etree.ElementTree as ET
 import io
 import subprocess
+import os
 
 # Update these with your MariaDB credentials
 DB_CONFIG = {
-    'host': 'db',  # Use Docker Compose service name
-    'port': 3306,
-    'user': 'root',
-    'password': 'root',
-    'database': 'python_dev'
+    'host': os.environ.get('MYSQL_HOST', 'db'),
+    'port': int(os.environ.get('MYSQL_PORT', 3306)),
+    'user': os.environ.get('MYSQL_USER', 'root'),
+    'password': os.environ.get('MYSQL_PASSWORD', 'root'),
+    'database': os.environ.get('MYSQL_DATABASE', 'python_dev')
 }
 
 def ensure_events_table():
