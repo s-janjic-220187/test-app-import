@@ -54,9 +54,10 @@
                 <tbody>
                     {% for row in names %}
                     <tr>
-                        {% for idx, item in enumerate(row) %}
+                        {% for item in row %}
+                        {% set idx = loop.index0 %}
                         {% if editable and col_names_raw[idx] != 'id' %}
-                        <td contenteditable="true" data-row="{{ loop.parentloop.index0 }}" data-col="{{ col_names_raw[idx] }}">{{ item }}</td>
+                        <td contenteditable="true" data-row="{{ loop.parent.index0 }}" data-col="{{ col_names_raw[idx] }}">{{ item }}</td>
                         {% else %}
                         <td>{{ item }}</td>
                         {% endif %}
