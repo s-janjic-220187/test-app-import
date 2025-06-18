@@ -381,9 +381,9 @@ def test_page():
 def run_tests():
     import subprocess
     try:
-        # Use verbose output and show summary, test names, and short log
+        # Use verbose output and show test names, short log, and durations (remove --summary)
         result = subprocess.run([
-            'pytest', 'tests', '--maxfail=1', '--disable-warnings', '-v', '--tb=short', '--show-capture=log', '--durations=10', '--summary', '--color=yes'
+            'pytest', 'tests', '--maxfail=1', '--disable-warnings', '-v', '--tb=short', '--show-capture=log', '--durations=10', '--color=yes'
         ], capture_output=True, text=True, timeout=30)
         output = result.stdout + '\n' + result.stderr
         success = result.returncode == 0
